@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Части речи: напоминалка и игры</title>
+<style>
+:root{
+  --bg:#f3f7f2; --card:#ffffff; --ink:#1f2a24; --muted:#5b6a60; --line:#cfdccf;
+  --noun:#2a6f97; --verb:#c2410c; --adv:#6d8b1f; --part:#8b3a8b;
+  --ok:#2e7d32; --bad:#b3261e;
+}
+@media (prefers-color-scheme:dark){
+  :root{ --bg:#16201a; --card:#1f2c24; --ink:#eef4ee; --muted:#a6b8aa; --line:#33463a;
+    --noun:#6bb6e0; --verb:#ff9a62; --adv:#b6d65a; --part:#d79ad7; --ok:#7fd48a; --bad:#ff8b82; }
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:18px/1.55 Georgia,"Times New Roman",serif;padding:0 16px 48px}
+main{max-width:720px;margin:0 auto}
+h1{font-size:2rem;margin:28px 0 4px;line-height:1.2}
+.sub{color:var(--muted);margin:0 0 20px}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+nav button,.opt,.next{font:inherit;cursor:pointer;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:10px 16px}
+nav button[aria-selected="true"]{border-color:var(--ink);font-weight:bold}
+button:focus-visible,.tok:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+section{display:none}
+section.on{display:block}
+.pos{background:var(--card);border-left:8px solid var(--c);border-radius:8px;padding:12px 16px;margin-bottom:12px}
+.pos h2{margin:0;font-size:1.25rem;color:var(--c)}
+.pos p{margin:4px 0}
+.q{font-style:italic}
+.panel{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:20px;text-align:center}
+.word{font-size:2.4rem;margin:8px 0 16px;font-weight:bold}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt{font-weight:bold}
+.opt[data-k="n"]{color:var(--noun)} .opt[data-k="v"]{color:var(--verb)}
+.opt[data-k="a"]{color:var(--adv)} .opt[data-k="p"]{color:var(--part)}
+.opt.right{background:var(--ok);color:#fff;border-color:var(--ok)}
+.opt.wrong{background:var(--bad);color:#fff;border-color:var(--bad)}
+.msg{min-height:3.2em;margin:14px 0 6px}
+.score{color:var(--muted);margin:0 0 6px}
+.next{background:var(--ink);color:var(--bg);border-color:var(--ink);font-weight:bold}
+.sent{font-size:1.6rem;line-height:2.2;margin:10px 0}
+.tok{display:inline-block;border:2px solid transparent;border-radius:8px;padding:0 6px;margin:0 2px;cursor:pointer;background:none;font:inherit;color:inherit}
+.tok:hover{border-color:var(--line)}
+.tok.right{background:var(--ok);color:#fff}
+.tok.wrong{background:var(--bad);color:#fff}
+.hint{color:var(--muted);font-size:.95rem}
+@media (max-width:480px){.opts{grid-template-columns:1fr}.word{font-size:2rem}.sent{font-size:1.3rem}}
+</style>
+</head>
+<body>
+<main>
+<h1>Части речи</h1>
+<p class="sub">Напомним, чем отличаются существительное, глагол, наречие и причастие, и поиграем.</p>
+
+<nav role="tablist">
+  <button role="tab" aria-selected="true" data-t="rem">Напоминалка</button>
+  <button role="tab" aria-selected="false" data-t="g1">Игра «Кто это?»</button>
+  <button role="tab" aria-selected="false" data-t="g2">Игра «Найди слово»</button>
+  <button role="tab" aria-selected="false" data-t="g3">Игра «Задай вопрос»</button>
+</nav>
+
+<section id="rem" class="on">
+  <div class="pos" style="--c:var(--noun)"><h2>Существительное</h2>
+    <p class="q">Кто? Что?</p><p>Называет предмет, живое существо или явление. Изменяется по падежам и числам.</p>
+    <p>кот, дом, река, радость</p></div>
+  <div class="pos" style="--c:var(--verb)"><h2>Глагол</h2>
+    <p class="q">Что делать? Что сделать?</p><p>Называет действие. Изменяется по временам и лицам.</p>
+    <p>бежит, читать, нарисовал, спим</p></div>
+  <div class="pos" style="--c:var(--adv)"><h2>Наречие</h2>
+    <p class="q">Как? Где? Когда? Куда?</p><p>Уточняет действие. <b>Не изменяется</b> и обычно стоит рядом с глаголом.</p>
+    <p>быстро, здесь, завтра, вниз</p></div>
+  <div class="pos" style="--c:var(--part)"><h2>Причастие</h2>
+    <p class="q">Какой? Что делающий? Что сделавший?</p><p>Описывает предмет по действию. <b>Изменяется</b>, как прилагательное, и образовано от глагола.</p>
+    <p>спящий кот, упавший лист, написанное письмо</p></div>
+  <p class="hint">Совет: наречие не меняет окончание, а причастие меняет: спит <b>тихо</b>, но <b>спящий</b> кот, <b>спящая</b> кошка.</p>
+</section>
+
+<section id="g1">
+  <div class="panel">
+    <p class="score" id="s1"></p>
+    <div class="word" id="w1"></div>
+    <div class="opts">
+      <button class="opt" data-k="n">Существительное</button>
+      <button class="opt" data-k="v">Глагол</button>
+      <button class="opt" data-k="a">Наречие</button>
+      <button class="opt" data-k="p">Причастие</button>
+    </div>
+    <p class="msg" id="m1" aria-live="polite"></p>
+    <button class="next" id="n1" hidden>Дальше</button>
+  </div>
+</section>
+
+<section id="g2">
+  <div class="panel">
+    <p class="score" id="s2"></p>
+    <p id="task2" style="margin:0"></p>
+    <div class="sent" id="sent2"></div>
+    <p class="msg" id="m2" aria-live="polite"></p>
+    <button class="next" id="n2" hidden>Дальше</button>
+  </div>
+</section>
+
+<section id="g3">
+  <div class="panel">
+    <p class="score" id="s3"></p>
+    <div class="word" id="w3"></div>
+    <div class="opts" id="o3">
+      <button class="opt" data-k="n">Кто? Что?</button>
+      <button class="opt" data-k="v">Что делать? Что сделать?</button>
+      <button class="opt" data-k="a">Как? Где? Когда? Куда?</button>
+      <button class="opt" data-k="p">Какой? Что делающий?</button>
+    </div>
+    <p class="msg" id="m3" aria-live="polite"></p>
+    <button class="next" id="n3" hidden>Дальше</button>
+  </div>
+</section>
+</main>
+
+<script>
+var NAMES={n:"существительное",v:"глагол",a:"наречие",p:"причастие"};
+var TASKNAMES={n:"существительное",v:"глагол",a:"наречие",p:"причастие"};
+var WORDS={
+ n:["кот","дом","река","школа","книга","окно","мяч","радость"],
+ v:["бежит","читать","рисует","спит","пойдём","прыгает","думал","смеются"],
+ a:["быстро","здесь","завтра","вниз","весело","далеко","домой","громко"],
+ p:["спящий","упавший","написанное","цветущий","бегущий","нарисованный","прочитанная","тающий"]
+};
+var HINTS={n:"Можно спросить «кто? что?».",v:"Называет действие.",a:"Отвечает «как? где? когда?» и не изменяется.",p:"Отвечает «какой?» и образовано от глагола."};
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+
+/* tabs */
+var tabs=document.querySelectorAll("nav button");
+tabs.forEach(function(b){b.onclick=function(){
+  tabs.forEach(function(x){x.setAttribute("aria-selected",x===b)});
+  document.querySelectorAll("section").forEach(function(s){s.classList.toggle("on",s.id===b.dataset.t)});
+}});
+
+/* game 1 */
+var deck1=[],i1=0,ok1=0,done1=false;
+function start1(){
+  var all=[];
+  Object.keys(WORDS).forEach(function(k){shuffle(WORDS[k]).slice(0,4).forEach(function(w){all.push({w:w,k:k})})});
+  deck1=shuffle(all);i1=0;ok1=0;show1();
+}
+function show1(){
+  var n1=document.getElementById("n1");
+  if(i1>=deck1.length){
+    document.getElementById("w1").textContent="Готово!";
+    document.getElementById("m1").textContent="Правильных ответов: "+ok1+" из "+deck1.length+".";
+    document.querySelector("#g1 .opts").style.display="none";
+    n1.hidden=false;n1.textContent="Сыграть ещё раз";
+    document.getElementById("s1").textContent="";
+    n1.onclick=function(){document.querySelector("#g1 .opts").style.display="";start1()};
+    return;
+  }
+  done1=false;
+  document.getElementById("w1").textContent=deck1[i1].w;
+  document.getElementById("s1").textContent="Слово "+(i1+1)+" из "+deck1.length+" · верно: "+ok1;
+  document.getElementById("m1").textContent="Какая это часть речи?";
+  n1.hidden=true;n1.textContent="Дальше";
+  n1.onclick=function(){i1++;show1()};
+  document.querySelectorAll("#g1 .opt").forEach(function(b){b.className="opt"});
+}
+document.querySelectorAll("#g1 .opt").forEach(function(b){b.onclick=function(){
+  if(done1||i1>=deck1.length)return;
+  done1=true;var cur=deck1[i1];
+  if(b.dataset.k===cur.k){ok1++;b.classList.add("right");
+    document.getElementById("m1").textContent="Верно! "+HINTS[cur.k]}
+  else{b.classList.add("wrong");
+    document.querySelector('#g1 .opt[data-k="'+cur.k+'"]').classList.add("right");
+    document.getElementById("m1").textContent="Это "+NAMES[cur.k]+". "+HINTS[cur.k]}
+  document.getElementById("s1").textContent="Слово "+(i1+1)+" из "+deck1.length+" · верно: "+ok1;
+  document.getElementById("n1").hidden=false;
+  document.getElementById("n1").focus();
+}});
+
+/* game 2: find the word in a sentence */
+var S=[
+ {t:"Кот лениво спит на диване.",k:"a",ans:["лениво"]},
+ {t:"Мальчик громко засмеялся.",k:"a",ans:["громко"]},
+ {t:"Мы завтра пойдём в зоопарк.",k:"a",ans:["завтра"]},
+ {t:"Птицы высоко летают над лесом.",k:"a",ans:["высоко"]},
+ {t:"Собака лежала рядом.",k:"a",ans:["рядом"]},
+ {t:"Я поднял упавший лист.",k:"p",ans:["упавший"]},
+ {t:"Под деревом лежал спящий пёс.",k:"p",ans:["спящий"]},
+ {t:"Мы любовались цветущим садом.",k:"p",ans:["цветущим"]},
+ {t:"Мама прочитала написанное письмо.",k:"p",ans:["написанное"]},
+ {t:"Девочка рисует цветок.",k:"v",ans:["рисует"]},
+ {t:"Ручей быстро бежит по камням.",k:"v",ans:["бежит"]},
+ {t:"Дети играли во дворе.",k:"v",ans:["играли"]},
+ {t:"Собака лежала рядом.",k:"n",ans:["Собака"]},
+ {t:"Девочка рисует цветок.",k:"n",ans:["Девочка","цветок"]},
+ {t:"Дети играли во дворе.",k:"n",ans:["Дети","дворе"]}
+];
+var deck2=[],i2=0,ok2=0,done2=false;
+function start2(){deck2=shuffle(S).slice(0,10);i2=0;ok2=0;show2()}
+function show2(){
+  var n2=document.getElementById("n2"),box=document.getElementById("sent2");
+  box.innerHTML="";
+  if(i2>=deck2.length){
+    document.getElementById("task2").textContent="Готово!";
+    document.getElementById("m2").textContent="Правильных ответов: "+ok2+" из "+deck2.length+".";
+    document.getElementById("s2").textContent="";
+    n2.hidden=false;n2.textContent="Сыграть ещё раз";n2.onclick=start2;return;
+  }
+  done2=false;var c=deck2[i2];
+  document.getElementById("s2").textContent="Предложение "+(i2+1)+" из "+deck2.length+" · верно: "+ok2;
+  document.getElementById("task2").textContent="Нажми на слово: "+TASKNAMES[c.k]+".";
+  document.getElementById("m2").textContent="";
+  n2.hidden=true;n2.textContent="Дальше";n2.onclick=function(){i2++;show2()};
+  c.t.split(" ").forEach(function(raw){
+    var w=raw.replace(/[.,!?]/g,""),b=document.createElement("button");
+    b.className="tok";b.type="button";b.textContent=raw;
+    b.onclick=function(){
+      if(done2)return;done2=true;
+      if(c.ans.indexOf(w)>-1){ok2++;b.classList.add("right");
+        document.getElementById("m2").textContent="Верно! "+HINTS[c.k]}
+      else{b.classList.add("wrong");
+        box.querySelectorAll(".tok").forEach(function(t){
+          if(c.ans.indexOf(t.textContent.replace(/[.,!?]/g,""))>-1)t.classList.add("right")});
+        document.getElementById("m2").textContent="Не то слово. Правильный ответ подсвечен. "+HINTS[c.k]}
+      document.getElementById("s2").textContent="Предложение "+(i2+1)+" из "+deck2.length+" · верно: "+ok2;
+      document.getElementById("n2").hidden=false;document.getElementById("n2").focus();
+    };
+    box.appendChild(b);
+  });
+}
+/* game 3: pick the question for a word */
+var QS={n:"кто? что?",v:"что делать? что сделать?",a:"как? где? когда? куда?",p:"какой? что делающий?"};
+var deck3=[],i3=0,ok3=0,done3=false;
+function start3(){
+  var all=[];
+  Object.keys(WORDS).forEach(function(k){shuffle(WORDS[k]).slice(0,3).forEach(function(w){all.push({w:w,k:k})})});
+  deck3=shuffle(all);i3=0;ok3=0;show3();
+}
+function show3(){
+  var n3=document.getElementById("n3"),o3=document.getElementById("o3");
+  if(i3>=deck3.length){
+    document.getElementById("w3").textContent="Готово!";
+    document.getElementById("m3").textContent="Правильных ответов: "+ok3+" из "+deck3.length+".";
+    document.getElementById("s3").textContent="";
+    o3.style.display="none";n3.hidden=false;n3.textContent="Сыграть ещё раз";
+    n3.onclick=function(){o3.style.display="";start3()};return;
+  }
+  done3=false;
+  document.getElementById("w3").textContent=deck3[i3].w;
+  document.getElementById("s3").textContent="Слово "+(i3+1)+" из "+deck3.length+" · верно: "+ok3;
+  document.getElementById("m3").textContent="Какой вопрос можно задать к этому слову?";
+  n3.hidden=true;n3.textContent="Дальше";n3.onclick=function(){i3++;show3()};
+  o3.querySelectorAll(".opt").forEach(function(b){b.className="opt"});
+}
+document.querySelectorAll("#o3 .opt").forEach(function(b){b.onclick=function(){
+  if(done3||i3>=deck3.length)return;
+  done3=true;var cur=deck3[i3],m=document.getElementById("m3");
+  if(b.dataset.k===cur.k){ok3++;b.classList.add("right");
+    m.textContent="Верно! «"+cur.w+"» — "+NAMES[cur.k]+": "+QS[cur.k]+"."}
+  else{b.classList.add("wrong");
+    document.querySelector('#o3 .opt[data-k="'+cur.k+'"]').classList.add("right");
+    m.textContent="«"+cur.w+"» — "+NAMES[cur.k]+". Вопросы: "+QS[cur.k]+"."}
+  document.getElementById("s3").textContent="Слово "+(i3+1)+" из "+deck3.length+" · верно: "+ok3;
+  document.getElementById("n3").hidden=false;document.getElementById("n3").focus();
+}});
+start1();start2();start3();
+</script>
+</body>
+</html>
